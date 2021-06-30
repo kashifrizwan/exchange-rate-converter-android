@@ -1,0 +1,2 @@
+rootProject.name='PayPay Code Challenge'
+include ':app'

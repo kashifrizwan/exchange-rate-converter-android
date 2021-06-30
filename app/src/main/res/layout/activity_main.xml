@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/main_activity_padding"
+        tools:context=".MainActivity">
+
+        <TextView
+            android:id="@+id/textView_LastUpdatedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            style="@style/EditText_Style"
+            android:id="@+id/editText_inputCurrencyValue"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/input_fields_height"
+            android:paddingStart="@dimen/row_margin"
+            android:paddingEnd="@dimen/row_margin"
+            android:layout_marginTop="@dimen/row_margin"
+            android:background="@drawable/edit_text_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_LastUpdatedAt"
+            app:layout_constraintEnd_toStartOf="@+id/spinner_inputCurrencyCode"/>
+
+        <Spinner
+            android:id="@+id/spinner_inputCurrencyCode"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/input_fields_height"
+            android:background="@drawable/spinner_background"
+            android:layout_marginLeft="@dimen/input_fields_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editText_inputCurrencyValue"
+            app:layout_constraintBottom_toBottomOf="@+id/editText_inputCurrencyValue"
+            app:layout_constraintTop_toTopOf="@+id/editText_inputCurrencyValue" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="@dimen/row_margin"
+            app:layout_constraintTop_toBottomOf="@+id/editText_inputCurrencyValue" />
+
+        <LinearLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            app:layout_constraintTop_toBottomOf="@+id/divider">
+
+            <TextView
+                style="@style/Header_Text_Style"
+                android:id="@+id/textView_Code"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/code"
+                android:background="@color/lightBlue"/>
+
+            <TextView
+                style="@style/Header_Text_Style"
+                android:id="@+id/textView_ExchangeRate"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="@string/rate"
+                android:gravity="right"
+                android:background="@color/lightRed" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/header_layout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_outputCurrencyList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider_2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="parsedExchangeRates"
+            type="com.paypay.codechallenge.models.ParsedExchangeRates" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:layout_marginTop="@dimen/row_margin"
+            android:layout_marginBottom="@dimen/row_margin" >
+
+            <TextView
+                android:id="@+id/textView_CurrencyCode"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@{parsedExchangeRates.currencyCode}" />
+
+            <TextView
+                android:id="@+id/textView_CurrencyValue"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(`%.2f`, parsedExchangeRates.exchangeRate)}" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorPrimary" />
+
+    </LinearLayout>
+
+</layout>

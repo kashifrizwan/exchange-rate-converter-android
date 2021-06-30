@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="row_margin">10dp</dimen>
+    <dimen name="main_activity_padding">20dp</dimen>
+    <dimen name="input_fields_height">40dp</dimen>
+    <dimen name="spinner_row_width">60dp</dimen>
+</resources>

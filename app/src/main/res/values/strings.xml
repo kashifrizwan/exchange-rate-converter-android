@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PayPay Code Challenge</string>
+    <string name="enter_amount">Enter amount</string>
+    <string name="rate">Rate</string>
+    <string name="code">Code</string>
+    <string name="last_updated">Last Updated From Cloud: %d min(s) ago</string>
+</resources>
