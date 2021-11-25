@@ -9,20 +9,23 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.paypay.codechallenge.adapter.ExchangeRatesAdapter
 import com.paypay.codechallenge.databinding.ActivityMainBinding
 import com.paypay.codechallenge.models.ParsedExchangeRates
 import com.paypay.codechallenge.viewmodel.MainActivityViewModel
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var activityMainViewModel: MainActivityViewModel
+    @Inject lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AndroidInjection.inject(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -30,10 +33,9 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
         binding.spinnerInputCurrencyCode.onItemSelectedListener = this
         binding.editTextInputCurrencyValue.addTextChangedListener(this)
 
-        activityMainViewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
-        activityMainViewModel.getCurrencyCodesFromRepo()
+        mainActivityViewModel.getCurrencyCodesFromRepo()
 
-        activityMainViewModel.exchangeRates.observe(this, Observer {
+        mainActivityViewModel.exchangeRates.observe(this, Observer {
             val parsedExchangeRates = it as List<ParsedExchangeRates>
             binding.recyclerViewOutputCurrencyList.apply {
                 adapter = ExchangeRatesAdapter(parsedExchangeRates)
@@ -41,16 +43,16 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
             }
         })
 
-        activityMainViewModel.currencyCodes.observe(this, Observer {
+        mainActivityViewModel.currencyCodes.observe(this, Observer {
             val currencyCodesList = it as List<String>
             binding.spinnerInputCurrencyCode.apply {
                 adapter = ArrayAdapter(this@MainActivity,
                     android.R.layout.simple_spinner_dropdown_item, currencyCodesList)
-                setSelection(activityMainViewModel.getSpinnerSelectionIndex())
+                setSelection(mainActivityViewModel.getSpinnerSelectionIndex())
             }
         })
 
-        activityMainViewModel.lastUpdatedAt.observe(this, Observer {
+        mainActivityViewModel.lastUpdatedAt.observe(this, Observer {
             val lastUpdatedMinutes = it as Int
             binding.textViewLastUpdatedAt.text = getString(R.string.last_updated, lastUpdatedMinutes)
         })
@@ -59,13 +61,13 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         if(binding.editTextInputCurrencyValue.text.isNotEmpty()) {
             val inputValue = binding.editTextInputCurrencyValue.text.toString().toDouble()
-            activityMainViewModel.getCalculatedExchangeRates(inputValue, position)
+            mainActivityViewModel.getCalculatedExchangeRates(inputValue, position)
         }
     }
 
     override fun afterTextChanged(currencyValue: Editable) {
         if(currencyValue.isNotEmpty()) {
-            activityMainViewModel.getCalculatedExchangeRates(currencyValue.toString().toDouble(),
+            mainActivityViewModel.getCalculatedExchangeRates(currencyValue.toString().toDouble(),
                 binding.spinnerInputCurrencyCode.selectedItemPosition)
         }
     }

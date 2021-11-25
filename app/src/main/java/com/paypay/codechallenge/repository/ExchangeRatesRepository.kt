@@ -9,11 +9,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.util.*
 import java.util.stream.Collectors
+import javax.inject.Inject
 import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 
-open class ExchangeRatesRepository {
+open class ExchangeRatesRepository @Inject constructor() {
 
     suspend fun getAllCurrencyCodes(): List<String>? {
         return if (SharedPreference.getLastUpdatedAt() == 0L) {

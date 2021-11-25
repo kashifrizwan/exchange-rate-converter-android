@@ -10,11 +10,13 @@ import com.paypay.codechallenge.repository.ExchangeRatesRepository
 import com.paypay.codechallenge.repository.SharedPreference
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class MainActivityViewModel : ViewModel() {
+class MainActivityViewModel @Inject constructor (
+    private var repository: ExchangeRatesRepository
+) : ViewModel() {
 
     private var selectedSpinnerIndex = -1
-    private var repository = ExchangeRatesRepository()
     val lastUpdatedAt: MutableLiveData<Int> = MutableLiveData()
     val currencyCodes: MutableLiveData<List<String>> = MutableLiveData()
     val exchangeRates: MutableLiveData<List<ParsedExchangeRates>> = MutableLiveData()
@@ -23,7 +25,7 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch{
             try{
                 currencyCodes.value = repository.getAllCurrencyCodes()
-            } catch (e:Exception){
+            } catch (e: Exception){
                 Log.e("GetCurrencyCodes", "Failure: ${e.message}")
             }
         }
@@ -47,6 +49,8 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    //ToDo: Four Functions of Business Logic Below
+
     fun getSpinnerSelectionIndex(): Int {
         return when (selectedSpinnerIndex) {
             -1 -> currencyCodes.value!!.indexOf(DatabaseConstants.DEFAULT_CURRENCY)
@@ -65,6 +69,8 @@ class MainActivityViewModel : ViewModel() {
     fun timeDifferenceInMillis(): Long {
         return Date(System.currentTimeMillis()).time - SharedPreference.getLastUpdatedAt()
     }
+
+    //ToDo: Replace this with dependency injection
 
     fun setMockRepositoryForTesting (repository: ExchangeRatesRepository) {
         this.repository = repository
