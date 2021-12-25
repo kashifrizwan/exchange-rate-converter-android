@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
         binding.spinnerInputCurrencyCode.onItemSelectedListener = this
         binding.editTextInputCurrencyValue.addTextChangedListener(this)
 
+        //ToDo: How to remove this call to ViewModel and this get function will be called from ViewModels init function
         mainActivityViewModel.getCurrencyCodesFromRepo()
 
         mainActivityViewModel.exchangeRates.observe(this, Observer {

@@ -1,7 +1,7 @@
 package com.paypay.codechallenge
 
 import android.app.Application
-import android.content.Context
+import com.paypay.codechallenge.di.AppModule
 import com.paypay.codechallenge.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -16,12 +16,10 @@ class PayPayCodeChallenge : Application(), HasAndroidInjector {
     override fun onCreate() {
         super.onCreate()
 
-        DaggerAppComponent.builder().build().inject(this);
-        context = applicationContext
-    }
-
-    companion object {
-        var context: Context? = null
+        DaggerAppComponent.builder()
+            .appModule(AppModule(applicationContext))
+            .build()
+            .inject(this)
     }
 
     override fun androidInjector(): AndroidInjector<Any> {

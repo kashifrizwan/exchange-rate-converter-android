@@ -13,7 +13,8 @@ import java.util.*
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor (
-    private var repository: ExchangeRatesRepository
+    private val repository: ExchangeRatesRepository,
+    private val sharedPreference: SharedPreference
 ) : ViewModel() {
 
     private var selectedSpinnerIndex = -1
@@ -52,7 +53,8 @@ class MainActivityViewModel @Inject constructor (
     //ToDo: Four Functions of Business Logic Below
 
     fun getSpinnerSelectionIndex(): Int {
-        return when (selectedSpinnerIndex) {
+            //ToDo: Check how to remove null check operator
+            return when (selectedSpinnerIndex) {
             -1 -> currencyCodes.value!!.indexOf(DatabaseConstants.DEFAULT_CURRENCY)
             else -> selectedSpinnerIndex
         }
@@ -67,12 +69,6 @@ class MainActivityViewModel @Inject constructor (
     }
 
     fun timeDifferenceInMillis(): Long {
-        return Date(System.currentTimeMillis()).time - SharedPreference.getLastUpdatedAt()
-    }
-
-    //ToDo: Replace this with dependency injection
-
-    fun setMockRepositoryForTesting (repository: ExchangeRatesRepository) {
-        this.repository = repository
+        return Date(System.currentTimeMillis()).time - sharedPreference.getLastUpdatedAt()
     }
 }

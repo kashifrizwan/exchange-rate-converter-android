@@ -35,8 +35,6 @@ v
 Fapp/src/main/java/com/paypay/codechallenge/models/LiveExchangeRates.kt,b/6/b6f8d48c1ba1816e88bf7612f084be41ed0a86e3
 x
 Happ/src/main/java/com/paypay/codechallenge/models/ParsedExchangeRates.kt,4/0/4008c3fcf33fad9dfe74e16a0666fdb11ee4687a
-i
-9app/src/main/java/com/paypay/codechallenge/network/Api.kt,c/d/cd005946c0a4bf4de16ee50c827e822d9f0440a0
 u
 Eapp/src/main/java/com/paypay/codechallenge/network/RetrofitBuilder.kt,8/7/87150a28b6b5ac5ec10db0225854bd6e241ca960
 i
@@ -55,3 +53,11 @@ Mapp/src/androidTest/java/com/paypay/codechallenge/PayPayCodeChallengeTests.kt,
 Mapp/src/main/java/com/paypay/codechallenge/viewmodel/MainActivityViewModel.kt,4/e/4e0f0c57800a2121b618bdf65a8a3a74c5e9a6ba
 €
 Papp/src/main/java/com/paypay/codechallenge/repository/ExchangeRatesRepository.kt,1/3/137054f2c8799b135ea2bf693ca1057fb0973680
+q
+Aapp/src/main/java/com/paypay/codechallenge/network/RetrofitApi.kt,4/2/42233ba100d206b9e8a23f801f238733f6b96e37
+j
+:app/src/main/java/com/paypay/codechallenge/di/AppModule.kt,2/8/280ff23a8f1c31168ff97e81475627cbbc1756c9
+s
+Capp/src/main/java/com/paypay/codechallenge/di/MainActivityModule.kt,8/4/8454c174e84eced0894e66e8749b45f689ae1b99
+m
+=app/src/main/java/com/paypay/codechallenge/di/AppComponent.kt,b/2/b235acb6fd4210fd93788204a613edfa893eb9bf

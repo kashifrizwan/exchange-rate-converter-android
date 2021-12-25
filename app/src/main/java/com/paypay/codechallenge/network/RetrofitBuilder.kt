@@ -4,25 +4,19 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class RetrofitBuilder {
+class RetrofitBuilder @Inject constructor() {
 
-    companion object{
+    val retrofit: Retrofit by lazy {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient().newBuilder().addInterceptor(interceptor).build()
 
-        private val retrofit: Retrofit by lazy {
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.level = HttpLoggingInterceptor.Level.BODY
-            val client = OkHttpClient().newBuilder().addInterceptor(interceptor).build()
-
-            Retrofit.Builder()
-                .baseUrl(Url.BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-
-        val api:Api by lazy {
-            retrofit.create(Api::class.java)
-        }
+        Retrofit.Builder()
+            .baseUrl(Url.BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 }
