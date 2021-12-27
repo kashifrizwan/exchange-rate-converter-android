@@ -23,7 +23,7 @@ class AppModule constructor(
 
     @Singleton
     @Provides
-    fun provideRoomDatabase() : ExchangeRatesDatabase? {
+    fun provideRoomDatabase() : ExchangeRatesDatabase {
         return Room.databaseBuilder(context, ExchangeRatesDatabase::class.java,
             DatabaseConstants.DATABASE_NAME).build()
     }

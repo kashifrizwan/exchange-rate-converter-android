@@ -22,7 +22,11 @@ class MainActivityViewModel @Inject constructor (
     val currencyCodes: MutableLiveData<List<String>> = MutableLiveData()
     val exchangeRates: MutableLiveData<List<ParsedExchangeRates>> = MutableLiveData()
 
-    fun getCurrencyCodesFromRepo() {
+    init {
+        getCurrencyCodesFromRepo()
+    }
+
+    private fun getCurrencyCodesFromRepo() {
         viewModelScope.launch{
             try{
                 currencyCodes.value = repository.getAllCurrencyCodes()
@@ -53,9 +57,8 @@ class MainActivityViewModel @Inject constructor (
     //ToDo: Four Functions of Business Logic Below
 
     fun getSpinnerSelectionIndex(): Int {
-            //ToDo: Check how to remove null check operator
             return when (selectedSpinnerIndex) {
-            -1 -> currencyCodes.value!!.indexOf(DatabaseConstants.DEFAULT_CURRENCY)
+            -1 -> currencyCodes.value?.indexOf(DatabaseConstants.DEFAULT_CURRENCY) ?: -1
             else -> selectedSpinnerIndex
         }
     }

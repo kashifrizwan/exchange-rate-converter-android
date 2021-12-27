@@ -19,7 +19,8 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
-    private lateinit var binding: ActivityMainBinding
+    //ToDo: Inject activityMainBinding with Dependency Injector
+    private lateinit var activityMainBinding: ActivityMainBinding
     @Inject lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,18 +28,19 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
         AndroidInjection.inject(this)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(activityMainBinding.root)
 
-        binding.spinnerInputCurrencyCode.onItemSelectedListener = this
-        binding.editTextInputCurrencyValue.addTextChangedListener(this)
+        activityMainBinding.spinnerInputCurrencyCode.onItemSelectedListener = this
+        activityMainBinding.editTextInputCurrencyValue.addTextChangedListener(this)
+    }
 
-        //ToDo: How to remove this call to ViewModel and this get function will be called from ViewModels init function
-        mainActivityViewModel.getCurrencyCodesFromRepo()
+    override fun onResume() {
+        super.onResume()
 
         mainActivityViewModel.exchangeRates.observe(this, Observer {
             val parsedExchangeRates = it as List<ParsedExchangeRates>
-            binding.recyclerViewOutputCurrencyList.apply {
+            activityMainBinding.recyclerViewOutputCurrencyList.apply {
                 adapter = ExchangeRatesAdapter(parsedExchangeRates)
                 layoutManager = LinearLayoutManager(this@MainActivity)
             }
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
         mainActivityViewModel.currencyCodes.observe(this, Observer {
             val currencyCodesList = it as List<String>
-            binding.spinnerInputCurrencyCode.apply {
+            activityMainBinding.spinnerInputCurrencyCode.apply {
                 adapter = ArrayAdapter(this@MainActivity,
                     android.R.layout.simple_spinner_dropdown_item, currencyCodesList)
                 setSelection(mainActivityViewModel.getSpinnerSelectionIndex())
@@ -55,13 +57,13 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
         mainActivityViewModel.lastUpdatedAt.observe(this, Observer {
             val lastUpdatedMinutes = it as Int
-            binding.textViewLastUpdatedAt.text = getString(R.string.last_updated, lastUpdatedMinutes)
+            activityMainBinding.textViewLastUpdatedAt.text = getString(R.string.last_updated, lastUpdatedMinutes)
         })
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-        if(binding.editTextInputCurrencyValue.text.isNotEmpty()) {
-            val inputValue = binding.editTextInputCurrencyValue.text.toString().toDouble()
+        if(activityMainBinding.editTextInputCurrencyValue.text.isNotEmpty()) {
+            val inputValue = activityMainBinding.editTextInputCurrencyValue.text.toString().toDouble()
             mainActivityViewModel.getCalculatedExchangeRates(inputValue, position)
         }
     }
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
     override fun afterTextChanged(currencyValue: Editable) {
         if(currencyValue.isNotEmpty()) {
             mainActivityViewModel.getCalculatedExchangeRates(currencyValue.toString().toDouble(),
-                binding.spinnerInputCurrencyCode.selectedItemPosition)
+                activityMainBinding.spinnerInputCurrencyCode.selectedItemPosition)
         }
     }
 

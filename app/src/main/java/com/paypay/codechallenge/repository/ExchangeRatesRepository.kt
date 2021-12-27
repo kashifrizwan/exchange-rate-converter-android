@@ -1,11 +1,12 @@
 package com.paypay.codechallenge.repository
 
-import com.paypay.codechallenge.database.ExchangeRatesDatabase
+import com.paypay.codechallenge.database.dao.ExchangeRatesDao
 import com.paypay.codechallenge.models.ParsedExchangeRates
-import com.paypay.codechallenge.network.RetrofitApi
 import com.paypay.codechallenge.network.NetworkConstants
-import kotlinx.coroutines.async
+import com.paypay.codechallenge.network.RetrofitApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.stream.Collectors
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import kotlin.collections.ArrayList
 open class ExchangeRatesRepository @Inject constructor(
     private val api: RetrofitApi,
     private val sharedPreference: SharedPreference,
-    private val exchangeRatesDatabase: ExchangeRatesDatabase?
+    private val exchangeRatesDao: ExchangeRatesDao
 ) {
 
     suspend fun getAllCurrencyCodes(): List<String>? {
@@ -31,7 +32,7 @@ open class ExchangeRatesRepository @Inject constructor(
         return if (isExchangeRatesOutdated(timeDifferenceInMillis)) {
             refreshExchangeRates()
         } else {
-            getAllExchangeRatesFromDB()!!
+            getAllExchangeRatesFromDB()
         }
     }
 
@@ -54,26 +55,21 @@ open class ExchangeRatesRepository @Inject constructor(
     }
 
     suspend fun insertExchangeRatesToDB(parsedExchangeRates: List<ParsedExchangeRates>) {
-        coroutineScope {
-            val databaseOperation = async {
-                exchangeRatesDatabase?.getExchangeRatesDao()?.insert(parsedExchangeRates)
-            }
-            databaseOperation.await()
+        withContext(Dispatchers.Default) {
+            exchangeRatesDao.insert(parsedExchangeRates)
         }
     }
 
-    private suspend fun getAllExchangeRatesFromDB() = coroutineScope {
-        val databaseOperation = async {
-            exchangeRatesDatabase?.getExchangeRatesDao()?.getAllExchangeRates()
+    suspend fun getAllExchangeRatesFromDB() = coroutineScope {
+        withContext(Dispatchers.Default) {
+            exchangeRatesDao.getAllExchangeRates()
         }
-        databaseOperation.await()
     }
 
-    private suspend fun getAllCurrencyCodesFromDB() = coroutineScope {
-        val databaseOperation = async {
-            exchangeRatesDatabase?.getExchangeRatesDao()?.getCurrencyCodesList()
+    suspend fun getAllCurrencyCodesFromDB() = coroutineScope {
+        withContext(Dispatchers.Default) {
+            exchangeRatesDao.getCurrencyCodesList()
         }
-        databaseOperation.await()
     }
 
     open fun isExchangeRatesOutdated(timeDifferenceInMillis: Long): Boolean {
