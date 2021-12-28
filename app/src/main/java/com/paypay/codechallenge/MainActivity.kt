@@ -69,9 +69,10 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
     }
 
     override fun afterTextChanged(currencyValue: Editable) {
-        if(currencyValue.isNotEmpty()) {
+        val selectedCurrencyIndex = activityMainBinding.spinnerInputCurrencyCode.selectedItemPosition
+        if(currencyValue.isNotEmpty() && selectedCurrencyIndex >= 0) {
             mainActivityViewModel.getCalculatedExchangeRates(currencyValue.toString().toDouble(),
-                activityMainBinding.spinnerInputCurrencyCode.selectedItemPosition)
+                selectedCurrencyIndex)
         }
     }
 

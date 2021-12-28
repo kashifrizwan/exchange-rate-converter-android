@@ -1,5 +1,6 @@
 package com.paypay.codechallenge.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,16 +25,27 @@ class MainActivityViewModel @Inject constructor (
 
     private fun getCurrencyCodes() {
         viewModelScope.launch {
-            currencyCodes.value = exchangeRatesDomain.getCurrencyCodes()
+            try{
+                currencyCodes.value = exchangeRatesDomain.getCurrencyCodes()
+            } catch (e: Exception){
+                Log.e("GetCurrencyCodes", "Failure: ${e.message}")
+            }
         }
     }
 
     fun getCalculatedExchangeRates(inputMultipleFactor: Double, inputCurrencyCodePosition: Int) {
         selectedSpinnerIndex = inputCurrencyCodePosition
         viewModelScope.launch {
-            exchangeRates.value = exchangeRatesDomain.getCalculatedExchangeRates(inputMultipleFactor,
-                inputCurrencyCodePosition)
-            lastUpdatedAt.value = exchangeRatesDomain.getLastUpdatedAtValue()
+            try{
+                exchangeRates.value = exchangeRatesDomain.getCalculatedExchangeRates(
+                    exchangeRates.value,
+                    inputMultipleFactor,
+                    inputCurrencyCodePosition
+                )
+                lastUpdatedAt.value = exchangeRatesDomain.getLastUpdatedAtValue()
+            } catch (e: Exception){
+                Log.e("GetExchangeRates", "Failure: ${e.message}")
+            }
         }
     }
 

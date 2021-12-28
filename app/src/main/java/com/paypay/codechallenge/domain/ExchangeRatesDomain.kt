@@ -22,8 +22,13 @@ class ExchangeRatesDomain @Inject constructor(
         }
     }
 
-    suspend fun getCalculatedExchangeRates(inputMultipleFactor: Double, inputCurrencyCodePosition: Int) : List<ParsedExchangeRates> {
-        val parsedExchangeRates = getExchangeRates()
+    suspend fun getCalculatedExchangeRates(
+        existingExchangeRates: List<ParsedExchangeRates>?,
+        inputMultipleFactor: Double,
+        inputCurrencyCodePosition: Int
+    ) : List<ParsedExchangeRates> {
+
+        val parsedExchangeRates = existingExchangeRates ?: getExchangeRates()
         val inputCurrencyRate = parsedExchangeRates[inputCurrencyCodePosition].exchangeRate
         parsedExchangeRates.forEach {
             it.exchangeRate = calculateExchangeRateValue(inputCurrencyRate, it.exchangeRate, inputMultipleFactor)
