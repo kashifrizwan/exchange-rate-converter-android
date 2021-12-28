@@ -9,9 +9,11 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.paypay.codechallenge.adapter.ExchangeRatesAdapter
 import com.paypay.codechallenge.databinding.ActivityMainBinding
+import com.paypay.codechallenge.di.viewmodelfactory.ViewModelFactory
 import com.paypay.codechallenge.models.ParsedExchangeRates
 import com.paypay.codechallenge.viewmodel.MainActivityViewModel
 import dagger.android.AndroidInjection
@@ -21,12 +23,15 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
     //ToDo: Inject activityMainBinding with Dependency Injector
     private lateinit var activityMainBinding: ActivityMainBinding
-    @Inject lateinit var mainActivityViewModel: MainActivityViewModel
+
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+    lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         AndroidInjection.inject(this)
+        mainActivityViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel::class.java)
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)

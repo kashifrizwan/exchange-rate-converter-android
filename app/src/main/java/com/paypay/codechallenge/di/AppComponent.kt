@@ -8,9 +8,10 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
     AndroidInjectionModule::class,
-    MainActivityModule::class,
+    ActivityBuilderModule::class,
     AppModule::class,
-    DataModule::class
+    DataModule::class,
+    ViewModelFactoryModule::class
 ])
 interface AppComponent {
     fun inject(application: PayPayCodeChallenge)

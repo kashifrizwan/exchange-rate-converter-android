@@ -20,6 +20,7 @@ class MainActivityViewModel @Inject constructor (
     val exchangeRates: MutableLiveData<List<ParsedExchangeRates>> = MutableLiveData()
 
     init {
+        Log.d("ExchangeRatesApp", "View Model Initialized")
         getCurrencyCodes()
     }
 
@@ -54,5 +55,10 @@ class MainActivityViewModel @Inject constructor (
             -1 -> currencyCodes.value?.indexOf(DatabaseConstants.DEFAULT_CURRENCY) ?: -1
             else -> selectedSpinnerIndex
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ExchangeRatesApp", "View Model Cleared")
     }
 }
