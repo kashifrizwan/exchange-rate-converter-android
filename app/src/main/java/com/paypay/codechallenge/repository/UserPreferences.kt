@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.paypay.codechallenge.database.DatabaseConstants
 import javax.inject.Inject
 
-class SharedPreference @Inject constructor(
+class UserPreferences @Inject constructor(
     private val sharedPreference: SharedPreferences
 ) {
     fun saveLastUpdatedAt(timeInMillis: Long) {

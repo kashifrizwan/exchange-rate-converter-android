@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,19 +15,17 @@ import com.paypay.codechallenge.adapter.ExchangeRatesAdapter
 import com.paypay.codechallenge.databinding.ActivityMainBinding
 import com.paypay.codechallenge.models.ParsedExchangeRates
 import com.paypay.codechallenge.viewmodel.MainActivityViewModel
-import dagger.android.AndroidInjection
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
 
     //ToDo: Inject activityMainBinding with Dependency Injector
     private lateinit var activityMainBinding: ActivityMainBinding
-    @Inject lateinit var mainActivityViewModel: MainActivityViewModel
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        AndroidInjection.inject(this)
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
@@ -69,9 +68,10 @@ class MainActivity : AppCompatActivity(), OnItemSelectedListener, TextWatcher {
     }
 
     override fun afterTextChanged(currencyValue: Editable) {
-        if(currencyValue.isNotEmpty()) {
+        val selectedCurrencyIndex = activityMainBinding.spinnerInputCurrencyCode.selectedItemPosition
+        if(currencyValue.isNotEmpty() && selectedCurrencyIndex >= 0) {
             mainActivityViewModel.getCalculatedExchangeRates(currencyValue.toString().toDouble(),
-                activityMainBinding.spinnerInputCurrencyCode.selectedItemPosition)
+                selectedCurrencyIndex)
         }
     }
 

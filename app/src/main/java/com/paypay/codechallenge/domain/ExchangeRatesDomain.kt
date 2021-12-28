@@ -2,19 +2,19 @@ package com.paypay.codechallenge.domain
 
 import com.paypay.codechallenge.models.ParsedExchangeRates
 import com.paypay.codechallenge.repository.ExchangeRatesRepository
-import com.paypay.codechallenge.repository.SharedPreference
+import com.paypay.codechallenge.repository.UserPreferences
 import java.util.*
 import java.util.stream.Collectors
 import javax.inject.Inject
 import kotlin.Comparator
 
 class ExchangeRatesDomain @Inject constructor(
-    private val sharedPreference: SharedPreference,
+    private val userPreferences: UserPreferences,
     private val repository: ExchangeRatesRepository
 ) {
 
     suspend fun getCurrencyCodes(): List<String> {
-        return if (sharedPreference.getLastUpdatedAt() == 0L) {
+        return if (userPreferences.getLastUpdatedAt() == 0L) {
             fetchExchangeRatesFromApi().stream().map(ParsedExchangeRates::currencyCode)
                 .collect(Collectors.toList())
         } else {
@@ -22,8 +22,13 @@ class ExchangeRatesDomain @Inject constructor(
         }
     }
 
-    suspend fun getCalculatedExchangeRates(inputMultipleFactor: Double, inputCurrencyCodePosition: Int) : List<ParsedExchangeRates> {
-        val parsedExchangeRates = getExchangeRates()
+    suspend fun getCalculatedExchangeRates(
+        existingExchangeRates: List<ParsedExchangeRates>?,
+        inputMultipleFactor: Double,
+        inputCurrencyCodePosition: Int
+    ) : List<ParsedExchangeRates> {
+
+        val parsedExchangeRates = existingExchangeRates ?: getExchangeRates()
         val inputCurrencyRate = parsedExchangeRates[inputCurrencyCodePosition].exchangeRate
         parsedExchangeRates.forEach {
             it.exchangeRate = calculateExchangeRateValue(inputCurrencyRate, it.exchangeRate, inputMultipleFactor)
@@ -52,7 +57,7 @@ class ExchangeRatesDomain @Inject constructor(
         })
 
         repository.insertExchangeRatesToDB(parsedExchangeRates)
-        sharedPreference.saveLastUpdatedAt(Date(System.currentTimeMillis()).time)
+        userPreferences.saveLastUpdatedAt(Date(System.currentTimeMillis()).time)
         return parsedExchangeRates
     }
 
@@ -65,7 +70,7 @@ class ExchangeRatesDomain @Inject constructor(
     }
 
     private fun timeDifferenceInMillis(): Long {
-        return Date(System.currentTimeMillis()).time - sharedPreference.getLastUpdatedAt()
+        return Date(System.currentTimeMillis()).time - userPreferences.getLastUpdatedAt()
     }
 
     private fun isExchangeRatesOutdated(timeDifferenceInMillis: Long): Boolean {

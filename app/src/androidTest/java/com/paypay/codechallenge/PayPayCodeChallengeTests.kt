@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.paypay.codechallenge.database.ExchangeRatesDatabase
 import com.paypay.codechallenge.models.ParsedExchangeRates
 import com.paypay.codechallenge.repository.ExchangeRatesRepository
-import com.paypay.codechallenge.repository.SharedPreference
+import com.paypay.codechallenge.repository.UserPreferences
 import com.paypay.codechallenge.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -48,7 +48,7 @@ class PayPayCodeChallengeTests {
     fun checkLastUpdatedAtWithTestInput() {
         //Given
         lastUpdatedAtTestTime = Date(System.currentTimeMillis()).time - 300000 //** Minus 5 minutes from milliseconds **//
-        SharedPreference.saveLastUpdatedAt(lastUpdatedAtTestTime)
+        UserPreferences.saveLastUpdatedAt(lastUpdatedAtTestTime)
 
         //When
         mainActivityViewModel.getLastUpdatedAt()
@@ -86,7 +86,7 @@ class PayPayCodeChallengeTests {
     @Test
     fun checkCurrencyCodesFetchOperationWithOutExistingData() = runBlocking {
         //Given
-        SharedPreference.saveLastUpdatedAt(0L)
+        UserPreferences.saveLastUpdatedAt(0L)
         `when`(exchangeRatesRepository.refreshExchangeRates()).thenReturn(getDummyExchangeRatesList())
 
         //When
@@ -107,7 +107,7 @@ class PayPayCodeChallengeTests {
     @Test
     fun checkCurrencyCodesFetchOperationWithExistingData() = runBlocking {
         //Given -- Entered dummy milliseconds to reflect that DB already has data **//
-        SharedPreference.saveLastUpdatedAt(300000L)
+        UserPreferences.saveLastUpdatedAt(300000L)
         exchangeRatesRepository.insertExchangeRatesToDB(getDummyExchangeRatesList())
 
         //When
@@ -128,7 +128,7 @@ class PayPayCodeChallengeTests {
     @Test
     fun getCalculatedExchangeRatesWithNewData() = runBlocking {
         //Given
-        SharedPreference.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 2000000)
+        UserPreferences.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 2000000)
         `when`(exchangeRatesRepository.refreshExchangeRates()).thenReturn(getDummyExchangeRatesList())
         exchangeRatesRepository.insertExchangeRatesToDB(getDummyExchangeRatesList())
 
@@ -152,7 +152,7 @@ class PayPayCodeChallengeTests {
     @Test
     fun getCalculatedExchangeRatesWithExistingData() = runBlocking {
         //Given
-        SharedPreference.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 1200000)
+        UserPreferences.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 1200000)
         exchangeRatesRepository.insertExchangeRatesToDB(getDummyExchangeRatesList())
 
         //When
@@ -174,7 +174,7 @@ class PayPayCodeChallengeTests {
     fun validateIfExchangeRatesOutdated() {
         //Given
         val repository = ExchangeRatesRepository()
-        SharedPreference.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 2000000)
+        UserPreferences.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 2000000)
 
         //When
         val result = repository.isExchangeRatesOutdated(mainActivityViewModel.timeDifferenceInMillis())
@@ -191,7 +191,7 @@ class PayPayCodeChallengeTests {
     fun validateIfExchangeRatesNotOutdated() {
         //Given
         val repository = ExchangeRatesRepository()
-        SharedPreference.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 1200000)
+        UserPreferences.saveLastUpdatedAt(Date(System.currentTimeMillis()).time - 1200000)
 
         //When
         val result = repository.isExchangeRatesOutdated(mainActivityViewModel.timeDifferenceInMillis())
